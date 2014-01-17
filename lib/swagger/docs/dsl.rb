@@ -29,6 +29,10 @@ module Swagger
         @nickname = nickname
       end
 
+      def notes(notes)
+        @notes = notes
+      end
+
       def parameters
         @parameters ||= []
       end
