@@ -202,6 +202,9 @@ describe Swagger::Docs::Generator do
           it "writes summary correctly" do
             expect(operations.first["summary"]).to eq "Fetches all User items"
           end
+          it "writes notes correctly" do
+            expect(operations.first["notes"]).to eq "Response is paginated"
+          end
           it "writes method correctly" do
             expect(operations.first["method"]).to eq "get"
           end

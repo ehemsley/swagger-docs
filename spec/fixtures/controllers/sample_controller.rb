@@ -7,6 +7,7 @@ module Api
 
       swagger_api :index do
         summary "Fetches all User items"
+        notes "Response is paginated"
         param :query, :page, :integer, :optional, "Page number"
         response :unauthorized
         response :not_acceptable, "The request you made is not acceptable"
