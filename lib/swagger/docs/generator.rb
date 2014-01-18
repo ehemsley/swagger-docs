@@ -14,24 +14,15 @@ module Swagger
 
         def camelize_keys_deep!(h)
           h.keys.each do |k|
-            ks    = k.to_s.camelize(:lower)
-            h[ks] = h.delete k
-            camelize_keys_deep! h[ks] if h[ks].kind_of? Hash
-            if h[ks].kind_of? Array
-              h[ks].each do |a|
-                next unless a.kind_of? Hash
-                camelize_keys_deep! a
-              end
-            end
-          end
-        end
-
-        def capitalize_model_keys!(h)
-          h.keys.each do |k|
-            if k == "models"
-              h[k].keys.each do |model_key|
-                ku = model_key.to_s.capitalize
-                h[k][ku] = h[k].delete model_key
+            unless k == :models
+              ks    = k.to_s.camelize(:lower)
+              h[ks] = h.delete k
+              camelize_keys_deep! h[ks] if h[ks].kind_of? Hash
+              if h[ks].kind_of? Array
+                h[ks].each do |a|
+                  next unless a.kind_of? Hash
+                  camelize_keys_deep! a
+                end
               end
             end
           end
@@ -132,7 +123,6 @@ module Swagger
             demod = "#{debased_path.to_s.camelize}".demodulize.camelize.underscore
             resource = header.merge({:resource_path => "#{demod}", :apis => apis, :models => models})
             camelize_keys_deep!(resource)
-            capitalize_model_keys!(resource)
             # write controller resource file
             write_to_file "#{api_file_path}/#{demod}.json", resource, config
             # append resource to resources array (for writing out at end)
