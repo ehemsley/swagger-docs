@@ -48,7 +48,7 @@ module Swagger
 
       def property(name, type, requirement)
         properties[name] = {type: type}
-        required << name if requirement
+        required << name if requirement == :required
       end
 
       def required

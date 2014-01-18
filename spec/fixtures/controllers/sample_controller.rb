@@ -8,6 +8,7 @@ module Api
       swagger_model :user do
         property :name, :string, :required
         property :age, :integer, :required
+        property :phone, :string, :optional
       end
 
       swagger_api :index do
