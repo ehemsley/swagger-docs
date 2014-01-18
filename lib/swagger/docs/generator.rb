@@ -123,7 +123,8 @@ module Swagger
               operations[:nickname] = "#{path.camelize}##{action}"
               apis << {:path => trim_slashes(get_api_path(trim_leading_slash(route.path.spec.to_s), config[:api_extension_type]).gsub("#{controller_base_path}","")), :operations => [operations]}
 
-              next if (model_properties = klass.swagger_model_properties).empty?
+              model_properties = klass.swagger_model_properties
+              next if model_properties.nil? || model_properties.empty?
               model_properties = Hash[model_properties.map {|k, v| [k.to_s.gsub("@","").to_sym, v] }] # rename :@instance hash keys
               key = model_properties[:id]
               models[key] = model_properties
