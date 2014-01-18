@@ -32,7 +32,7 @@ module Swagger
         def swagger_model(model_name, &block)
           @swagger_model_dsl ||= {}
           dsl = SwaggerDSL.call(model_name, self, &block)
-          dsl[:id] = model_name.camelize
+          dsl[:id] = model_name.to_s.camelize
           @swagger_model_dsl = dsl
         end
 
