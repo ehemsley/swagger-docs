@@ -26,6 +26,17 @@ module Swagger
           end
         end
 
+        def capitalize_model_keys!(h)
+          h.keys.each do |k|
+            if k == "models"
+              h[k].keys.each do |model_key|
+                ku = model_key.to_s.capitalize
+                h[k][ku] = h[k].delete model_key
+              end
+            end
+          end
+        end
+
         def get_api_path(spec, extension)
           extension = ".#{extension}" if extension
           path_api = trim_leading_slash(spec.to_s.gsub("(.:format)", extension.to_s))
@@ -101,6 +112,7 @@ module Swagger
               next
             end
             apis = []
+            models = {}
             debased_path = path.gsub("#{controller_base_path}", "")
             Rails.application.routes.routes.select{|i| i.defaults[:controller] == path}.each do |route|
               action = route.defaults[:action]
@@ -110,10 +122,16 @@ module Swagger
               operations[:method] = verb
               operations[:nickname] = "#{path.camelize}##{action}"
               apis << {:path => trim_slashes(get_api_path(trim_leading_slash(route.path.spec.to_s), config[:api_extension_type]).gsub("#{controller_base_path}","")), :operations => [operations]}
+
+              next if (model_properties = klass.swagger_model_properties).empty?
+              model_properties = Hash[model_properties.map {|k, v| [k.to_s.gsub("@","").to_sym, v] }] # rename :@instance hash keys
+              key = model_properties[:id]
+              models[key] = model_properties
             end
             demod = "#{debased_path.to_s.camelize}".demodulize.camelize.underscore
-            resource = header.merge({:resource_path => "#{demod}", :apis => apis})
+            resource = header.merge({:resource_path => "#{demod}", :apis => apis, :models => models})
             camelize_keys_deep!(resource)
+            capitalize_model_keys!(resource)
             # write controller resource file
             write_to_file "#{api_file_path}/#{demod}.json", resource, config
             # append resource to resources array (for writing out at end)

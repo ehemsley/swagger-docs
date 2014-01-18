@@ -42,6 +42,19 @@ module Swagger
           :description => description, :required => required == :required ? true : false}.merge(hash)
       end
 
+      def properties
+        @properties ||= {}
+      end
+
+      def property(name, type, requirement)
+        properties[name] = {type: type}
+        required << name if requirement
+      end
+
+      def required
+        @required ||= []
+      end
+
       def response_messages
         @response_messages ||= []
       end

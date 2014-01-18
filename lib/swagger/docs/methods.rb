@@ -19,12 +19,24 @@ module Swagger
           @swagger_dsl
         end
 
+        def swagger_model_properties
+          @swagger_model_dsl
+        end
+
         def swagger_config
           @swagger_config ||= {}
         end
 
         private
 
+        def swagger_model(model_name, &block)
+          @swagger_model_dsl ||= {}
+          dsl = SwaggerDSL.call(model_name, self, &block)
+          dsl[:id] = model_name.capitalize
+          @swagger_model_dsl = dsl
+        end
+
+        ##define swagger_model in this way?
         def swagger_api(action, &block)
           @swagger_dsl ||= {}
           controller_action = "#{name}##{action} #{self.class}"

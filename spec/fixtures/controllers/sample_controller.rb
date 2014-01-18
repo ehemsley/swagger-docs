@@ -5,6 +5,11 @@ module Api
     class SampleController < SuperclassController
       swagger_controller :users, "User Management"
 
+      swagger_model :user do
+        property :name, :string, :required
+        property :age, :integer, :required
+      end
+
       swagger_api :index do
         summary "Fetches all User items"
         notes "Response is paginated"

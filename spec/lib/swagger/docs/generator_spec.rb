@@ -169,6 +169,7 @@ describe Swagger::Docs::Generator do
         let(:resource) { FILE_RESOURCE.read }
         let(:response) { JSON.parse(resource) }
         let(:first) { response["apis"].first }
+        let(:model) { response["models"]["User"]}
         let(:operations) { first["operations"] }
         let(:params) { operations.first["parameters"] }
         let(:response_msgs) { operations.first["responseMessages"] }
@@ -245,6 +246,18 @@ describe Swagger::Docs::Generator do
             end
             it "writes specified message correctly" do
               expect(response_msgs[1]["message"]).to eq "The request you made is not acceptable"
+            end
+          end
+
+          context "first model" do
+            it "has correct id" do
+              expect(model["id"]).to eq "User"
+            end
+            it "has correct properties" do
+              expect(model["properties"]["name"]["type"]).to eq "string"
+            end
+            it "has correct required properties" do
+              expect(model["required"]).to eq ["name", "age"]
             end
           end
         end
